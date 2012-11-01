@@ -1,0 +1,94 @@
+# Les commentaires commencent par #
+# Les variables commencent par % pour l'affectation ou l'appel 
+
+# Le mot clé "event" permet de gérer un événment IRC : réception de message dans un salon, réception de message privé (QueryNotice)
+# Dans le cas ci-dessous, on demande de gérer les événements "messages privés" avec pour nom une procédure "getPackage"
+# Pour regarder ce qui est automatiquement passé en paramètres à un "OnQueryNotice" se référer à la doc
+
+event(OnQueryNotice,getPackage)
+{
+	# Les variables sont passées en global en utilisant le mot clé "global"
+	# Il y a certainement plus propre à faire mais pas encore regardé
+	global %cmd_table,%timertest,%winid,%cptCmd
+	
+	# Sur IRC, très fréquemment les messages sont écrits avec des couleurs
+	# La commande "stripcolors" permet de retirer tous les codes couleurs du message reçu
+	%cmd =  $str.stripcolors($3)
+	
+	# Dans notre cas, il faut gérer seulement les mesages privés provenant des bots nommés "ls" ou "cl" et ne prendre en compte que les messages 
+	# contenant "/msg" qui indique que le bot nous  communique des commandes à exécuter pour récupérer les paquets
+    if(($0 == "ls" || $0 == "cl") &&  $str.contains( %cmd,"/msg")){
+		# L'affectation ci-dessous permet de ne récupérer que la chaîne de caractères de la commande donnée par le bot
+		%cmd = $str.mid(%cmd, $str.find(%cmd,"msg"), $( $str.find(%cmd," | Used") - $str.find(%cmd,"msg")))
+		# On construtit un tableau de commande  "cmd_table" avec toutes les commandes fournies par le bot
+		%cmd_table <+ %cmd
+		#echo %cmd_table
+		# La ligne suivante permet de lancer une unique fois un timer.
+		# Le principe du timer est d'exécuter une commande après n millisecondes.
+		# Dans notre cas, on parse la table des commandes reçues après 10 secondes pour être sur que le bot nous a communiqué l'intégralité des commandes
+		if(%timertest==0) {%timertest=1;timer(test,10000){ parseCmdTable; }}
+	} else if ( $str.contains( %cmd,"Invalid Pack") ) {
+		 # Parfois la liste fournie par le bot n'est pas tout à fait à jour
+		 # ce qui fait qu'on peut recevoir des messages "Invalid PAck" fourni par le bot à qui on demande le téléchargement du pack
+		 # Si on reçoit ce massage, on incrémente le compteur de commande et on évalue la commande suivante
+		 %cptCmd++
+		 eval  %cmd_table[%cptCmd]
+	}
+	
+	# On récupére l'identifiant de la fenêtre courante pour pouvoir lancer l'évaluation de nos commandes.
+	%winid = $window
+    
+}
+
+# On gère l'événement fichier mal transféré "OnDCCFileTransferFailed" en relançant la commande suivante dans la table cmd_table
+# TODO : Faire en sorte d'avertir par mail, android, .... si on a parcouru toutes les commandes sans avoir un fichier bon!
+event(OnDCCFileTransferFailed,transferFailed)
+{
+	global %cmd_table,%cptCmd,%winid
+	
+	# Incrément du compteur de commande
+	%cptCmd++
+	# On revient sur la fenêtre dont on avait sauvé l'ID 
+	rebind  %winid
+	# On évalue (exécute) une des commandes passés par le bot.
+	eval  %cmd_table[%cptCmd]
+	
+	# En dessous quelques essais pour l'instant infructueux
+	#echo "Nickname -> $dcc.remoteNick($2)"
+	#$dcc.ircContext($2)
+	#echo "Reason of transfer failed -> $0"
+	
+}
+
+# Un alias est l'équivalent d'une fonction à qui on donne un nom "parseCmdTable"
+# Si il y a des paramètres, ils s'appelleront $1,$2,$3,...
+alias(parseCmdTable)
+{
+	global %cmd_table,%cptCmd;
+
+	# On évalue (exécute) une des commandes passés par le bot.
+	eval  %cmd_table[%cptCmd]
+	
+	# On kill le timer qui sinon s'exécute toutes les n millisecondes (dans notre cas 10 secondes)
+	killtimer test
+	
+} 
+
+# Définition des varibales globales qu'on unset au début pour être sur qu'elles sont vides 
+global %cmd_table,%timertest,%cptCmd,%winid;
+unset  %cmd_table,%timertest,%cptCmd,%winid;
+
+# Initialisation de certaines valeurs de variables
+%timertest=0
+%cptCmd=0
+
+# On rejoint les salons #mg-chat et #movie-gods
+join #mg-chat 
+join #movie-gods
+
+# On lance un message sur le channel #mg-chat avec les paramètres passés par le script kvirc
+msg #mg-chat !s $1 $2 $3
+
+
+
+
