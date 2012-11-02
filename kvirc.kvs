@@ -1,4 +1,9 @@
-# Les commentaires commencent par #
+#TODO : Ne pas spammer si plusieurs entrées lors de l'appel de ce script
+#TODO : comment gérer plusieurs épisodes à télécharger simultanément
+#TODO : Gérer si un fichier s'est mal téléchargé
+#TODO : Gérer si un fichier n'a pas été trouvé dans les bots flexget --series-forget
+
+# Les commentaires commencent par
 # Les variables commencent par % pour l'affectation ou l'appel 
 
 # Le mot clé "event" permet de gérer un événment IRC : réception de message dans un salon, réception de message privé (QueryNotice)
@@ -84,7 +89,7 @@ unset  %cmd_table,%timertest,%cptCmd,%winid;
 
 # On rejoint les salons #mg-chat et #movie-gods
 join #mg-chat 
-join #movie-gods
+join #movieegods
 
 # On lance un message sur le channel #mg-chat avec les paramètres passés par le script kvirc
 msg #mg-chat !s $1 $2 $3

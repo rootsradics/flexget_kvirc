@@ -74,15 +74,12 @@ class UrlRewritePrelist(object):
         # urllib.quote will crash if the unicode string has non ascii characters, so encode in utf-8 beforehand
         url = 'http://www.prelist.ws/?search=' + urllib.quote(query.encode('utf-8')) 
         log.debug('Using %s as prelist search url' % url)
-        log.debug('name: essai')
         page = requests.get(url).content
         soup = get_soup(page)
         entries = []
-        log.debug('name: essai')
         for link in soup.find_all('a',attrs={'href' : re.compile('search=')}):
             log.debug('name: %s' % link)
 
-            log.debug('nametoto: %s' % link.contents[0])
             comparator.set_seq2(link.contents[0])
             log.debug('name: %s' % comparator.a)
             log.debug('found name: %s' % comparator.b)
