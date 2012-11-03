@@ -1,10 +1,33 @@
 #TODO : Ne pas spammer si plusieurs entrées lors de l'appel de ce script
 #TODO : comment gérer plusieurs épisodes à télécharger simultanément
 #TODO : Gérer si un fichier s'est mal téléchargé
-#TODO : Gérer si un fichier n'a pas été trouvé dans les bots flexget --series-forget
+#TODO : Gérer si un fichier n'a pas été trouvé dans les bots (flexget --series-forget) --> DONE mais à tester
 
 # Les commentaires commencent par
 # Les variables commencent par % pour l'affectation ou l'appel 
+
+#Ajout de la classe serie qui consigne les propriétés d'une série
+class(Serie,object)
+{
+		constructor()
+        {
+            $this->%serie_name=$0     # Nom de la série
+			$this->%serie_episode=$1  # Numéro de l'épisode
+			$this->%serie_quality=$2  # Qualité de l'épisode
+			$this->%serie_url=$3      # Url de l'épisode
+        }
+}
+
+#Ajout de la classe Flexget qui consigne les propriétés de Flexget
+class(FlexGet,object)
+{
+		constructor()
+        {
+            $this->%exe_path=$0 # Path de l'exécutable
+			$this->%config_file=$1 # Fichier de config de flexget
+        }
+}
+
 
 # Le mot clé "event" permet de gérer un événment IRC : réception de message dans un salon, réception de message privé (QueryNotice)
 # Dans le cas ci-dessous, on demande de gérer les événements "messages privés" avec pour nom une procédure "getPackage"
@@ -14,7 +37,7 @@ event(OnQueryNotice,getPackage)
 {
 	# Les variables sont passées en global en utilisant le mot clé "global"
 	# Il y a certainement plus propre à faire mais pas encore regardé
-	global %cmd_table,%timertest,%winid,%cptCmd
+	global %cmd_table,%timertest,%winid,%cptCmd,%serie,%flexget
 	
 	# Sur IRC, très fréquemment les messages sont écrits avec des couleurs
 	# La commande "stripcolors" permet de retirer tous les codes couleurs du message reçu
@@ -35,11 +58,13 @@ event(OnQueryNotice,getPackage)
 	} else if ( $str.contains( %cmd,"Invalid Pack") ) {
 		 # Parfois la liste fournie par le bot n'est pas tout à fait à jour
 		 # ce qui fait qu'on peut recevoir des messages "Invalid PAck" fourni par le bot à qui on demande le téléchargement du pack
-		 # Si on reçoit ce massage, on incrémente le compteur de commande et on évalue la commande suivante
+		 # Si on reçoit ce message, on incrémente le compteur de commande et on évalue la commande suivante
 		 %cptCmd++
 		 eval  %cmd_table[%cptCmd]
+	} else if ( $str.contains( %cmd,"No packs found for") ) {
+		exec -e -t -x ("%flexget->%exe_path -c %flexget->%config_file --forget \"%serie->%serie_url\"") {echo $1;};
+		timer(flexget,1000) {global %serie,%flexget;exec -e -t -x ("%flexget->%exe_path -c %flexget->%config_file --series-forget '%serie->%serie_name %serie->%serie_episode'") {echo $1;};killtimer flexget;}
 	}
-	
 	# On récupére l'identifiant de la fenêtre courante pour pouvoir lancer l'évaluation de nos commandes.
 	%winid = $window
     
@@ -80,20 +105,23 @@ alias(parseCmdTable)
 } 
 
 # Définition des varibales globales qu'on unset au début pour être sur qu'elles sont vides 
-global %cmd_table,%timertest,%cptCmd,%winid;
+global %cmd_table,%timertest,%cptCmd,%winid,%floodCpt,%serie,%flexget;
 unset  %cmd_table,%timertest,%cptCmd,%winid;
 
 # Initialisation de certaines valeurs de variables
 %timertest=0
 %cptCmd=0
+%floodCpt=0
+
+%serie=$new(Serie,0,"myserie",$1,$2,$3,$4)
+%flexget=$new(FlexGet,0,"myflexget","I:\\Python26\\Scripts\\flexget.exe",$5)
+
+
 
 # On rejoint les salons #mg-chat et #movie-gods
 join #mg-chat 
-join #movieegods
+join #moviegods
 
 # On lance un message sur le channel #mg-chat avec les paramètres passés par le script kvirc
-msg #mg-chat !s $1 $2 $3
-
-
-
-
+#timer(antiflood%floodCpt,10000){ global  %floodCpt,%param1,%param2,%param3; msg #mg-chat !s %param1 %param2 %param3; killtimer antiflood%floodCpt;%floodCpt++;}
+msg #mg-chat !s %serie->%serie_name %serie->%serie_episode %serie->%serie_quality
