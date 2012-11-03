@@ -16,6 +16,7 @@ presets:
       reject:
         - "720p"
         - "1080p"
+        # J'ai l'impression que "VO+STFR" ne marche pas
         - "VO+STFR"
 
   tv-myshows:
