@@ -1,0 +1,20 @@
+presets:
+  global:
+    urlrewrite:
+      tvsubtitles:
+        regexp: http://www.tvsubtitles.net/subtitle-
+        format: http://www.tvsubtitles.net/download-
+    series:
+      - South Park
+      - Arrow
+      - American Horror Story
+    download: D:\telech\flexget\testdl\
+    exec:
+      on_output:
+        for_accepted: subTreatment.bat "{{filename}}" "{{series_name}}" "{{series_id}}" "{{series_season}}"
+
+tasks:
+  task_tvsubtitles:
+    rss: http://www.tvsubtitles.net/rssfr.xml
+#  task_sous-titres:
+#    rss: http://www.sous-titres.eu/series.xml
