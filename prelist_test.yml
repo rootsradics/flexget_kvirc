@@ -1,3 +1,11 @@
+email:
+  from: flexget@free.fr
+  to: moacmoa@free.fr
+  smtp_host: smtp.free.fr
+  smtp_port: 587
+  smtp_tls: no
+
+
 tasks:
   task_test:
     html: http://www.prelist.ws/?section=TV
@@ -5,7 +13,11 @@ tasks:
       - Dexter
       - Homeland
       - South Park
-      - Celebrity Juice
+      - The Big Bang Theory
+      - Breaking bad
+      - Game of thrones
+      - Glee
+      - This is england
     exec:
       on_output:
-        for_accepted: C:\"Program Files"\KVIrc\kvirc.exe -r "parse d:/telech/flexget/kvirc.kvs {{series_name}} {{series_id}} {{quality}} prelist_test.yml"
+        for_accepted: C:\"Program Files"\KVIrc\kvirc.exe -r "parse d:/telech/flexget/kvirc.kvs \"{{series_name}}\" \"{{series_id}}\" \"mp4\" \"prelist_test.yml\""
