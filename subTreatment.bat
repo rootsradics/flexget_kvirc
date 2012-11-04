@@ -2,6 +2,8 @@
 :: prêts à être inséré(s) dans un mkv. (unzip, rename, move, ...)
 :: Ensuite, la création du mkv est lancée (create_mkv.bat).
 :: Le script utilise unzip.exe qui doit être renseigné dans les variables
+:: Utilisation :
+::			subTreatment.bat "nomDuFichierZip" "nomDeLaSerie" "SxxExx" "numeroDeLaSaison"
 
 :: ToDo -> il subsiste certainement des bugs si les path contiennent des espaces. A corriger.
 :: ToDo -> insérer date/heure dans nom du fichier srt pour éviter les conflits de noms de fichiers

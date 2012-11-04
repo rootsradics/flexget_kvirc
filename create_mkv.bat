@@ -1,11 +1,16 @@
 :: Génère un fichier MKV si les fichiers nécessaires (une vidéo et au moins 1 sous-titre) sont présents.
 :: La génération se fait via mkvmerge.exe de l'outil "mkvtoolnix". L'exécutable est dans le path windows.
+:: Utilisation :
+::			create_mkv.bat "nomDeLaSerie" "SxxExx" "numeroDeLaSaison"
 
-:: ToDo -> Afiner la création du mkv via mkvmerge aen ajoutant des options
+:: ToDo -> Afiner la création du mkv via mkvmerge en ajoutant des options
 
 @echo off
 
-:: Récupératio des paramètres
+:: Variables 'path' à renseigner
+set dirBase=d:\telech\flexget\testdl\
+
+:: Récupération des paramètres
 set param1=%1
 set serieName=%param1:"=%
 set param2=%2
@@ -16,7 +21,6 @@ set numSaison=%param3:"=%
 :: Initialisation des variables
 set phrase=%serieName% %serieId%
 set testFile=*%phrase: =*%*
-set dirBase=d:\telech\flexget\testdl\
 set dirname="%1 - Saison %3 (VOSTFR)"
 set dirname=%dirname:"=%
 set pathComplet=%dirBase%%dirname%\
