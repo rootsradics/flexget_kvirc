@@ -1,0 +1,11 @@
+tasks:
+  task_test:
+    html: http://www.prelist.ws/?section=TV
+    series:
+      - Dexter
+      - Homeland
+      - South Park
+      - Celebrity Juice
+    exec:
+      on_output:
+        for_accepted: C:\"Program Files"\KVIrc\kvirc.exe -r "parse d:/telech/flexget/kvirc.kvs {{series_name}} {{series_id}} {{quality}} prelist_test.yml"
