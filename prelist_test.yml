@@ -17,7 +17,7 @@ tasks:
       - Breaking bad
       - Game of thrones
       - Glee
-      - This is england
+      - This is England
     exec:
       on_output:
-        for_accepted: C:\"Program Files"\KVIrc\kvirc.exe -r "parse d:/telech/flexget/kvirc.kvs \"{{series_name}}\" \"{{series_id}}\" \"mp4\" \"prelist_test.yml\""
+        for_accepted: C:\"Program Files"\KVIrc\kvirc.exe -r "parse d:/telech/flexget/kvirc.kvs \"{{series_name}}\" \"{{series_id}}\" \"{{url}}\" \"mp4\" \"prelist_test.yml\""

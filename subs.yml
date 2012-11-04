@@ -5,9 +5,14 @@ presets:
         regexp: http://www.tvsubtitles.net/subtitle-
         format: http://www.tvsubtitles.net/download-
     series:
+      - Dexter
+      - Homeland
       - South Park
-      - Arrow
-      - American Horror Story
+      - The Big Bang Theory
+      - Breaking bad
+      - Game of thrones
+      - Glee
+      - This is England
     download: D:\telech\flexget\testdl\
     exec:
       on_output:
