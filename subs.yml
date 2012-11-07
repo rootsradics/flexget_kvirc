@@ -29,7 +29,7 @@ email:
   smtp_tls: no
 
 tasks:
-  task_tvsubtitles:
+  tv-subtitles:
     rss: http://www.tvsubtitles.net/rssfr.xml
 #  task_sous-titres:
 #    rss: http://www.sous-titres.eu/series.xml

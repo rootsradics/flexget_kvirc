@@ -1,0 +1,13 @@
+presets:
+  global:
+    urlrewrite:
+      tvsubtitles:
+        regexp: http://www.tvsubtitles.net/subtitle-
+        format: http://www.tvsubtitles.net/download-
+
+tasks:
+  task_test:
+    rss: http://www.tvsubtitles.net/rssfr.xml
+    series:
+      - Dexter
+    download: D:\telech\flexget\
