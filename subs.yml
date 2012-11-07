@@ -13,10 +13,20 @@ presets:
       - Game of thrones
       - Glee
       - This is England
-    download: D:\telech\flexget\testdl\
+      - Castle
+    download: D:\telech\flexget\Downloads\
     exec:
       on_output:
-        for_accepted: subTreatment.bat "{{filename}}" "{{series_name}}" "{{series_id}}" "{{series_season}}"
+        for_accepted: subTreatment.bat "{{filename}}" "{{series_name}}" "{{series_id}}" "{{series_season}}" "{{title}}" "{{url}}"
+        #for_accepted: writeSeriesToForget.bat "{{series_name}}" "{{series_id}}"
+        #phase: test2.bat
+
+email:
+  from: flexget@free.fr
+  to: moacmoa@free.fr
+  smtp_host: smtp.free.fr
+  smtp_port: 587
+  smtp_tls: no
 
 tasks:
   task_tvsubtitles:
