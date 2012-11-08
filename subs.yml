@@ -17,7 +17,7 @@ presets:
     download: D:\telech\flexget\Downloads\
     exec:
       on_output:
-        for_accepted: subTreatment.bat "{{filename}}" "{{series_name}}" "{{series_id}}" "{{series_season}}" "{{title}}" "{{url}}"
+        for_accepted: subsTreatment.bat "{{filename}}" "{{series_name}}" "{{series_id}}" "{{series_season}}" "{{title}}" "{{url}}"
         #for_accepted: writeSeriesToForget.bat "{{series_name}}" "{{series_id}}"
         #phase: test2.bat
 
